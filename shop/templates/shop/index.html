@@ -91,16 +91,19 @@
 
 {% block js %}
 <script>
-console.log('Working');
-
-if (localStorage.getItem('cart') == null) {
-    var cart = {};
-} else {
-    var cart = JSON.parse(localStorage.getItem('cart'));
-}
-
-// Add event listeners to all "Add to Cart" buttons
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('Working');
+
+    // Load cart or initialize if not present
+    let cart = {};
+    if (localStorage.getItem('cart') !== null) {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+
+    // Update cart count on page load
+    updateCartBadge();
+
+    // Attach click event to all "Add to Cart" buttons
     const buttons = document.getElementsByClassName('add-cart-btn');
     Array.from(buttons).forEach((btn) => {
         btn.addEventListener('click', function (e) {
@@ -108,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const productId = this.getAttribute('data-product-id');
             console.log('Clicked product ID:', productId);
 
-            // Example: Add to cart logic
             if (cart[productId] !== undefined) {
                 cart[productId] += 1;
             } else {
@@ -117,8 +119,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
             localStorage.setItem('cart', JSON.stringify(cart));
             console.log(cart);
+
+            updateCartBadge();
         });
     });
+
+    // Function to update the cart count badge
+    function updateCartBadge() {
+        const badge = document.getElementById('cart');
+        if (badge) {
+            let itemCount = 0;
+            for (let key in cart) {
+                itemCount += cart[key];  // count quantity of all items
+            }
+            badge.innerText = itemCount;
+        }
+    }
 });
 </script>
 {% endblock %}
