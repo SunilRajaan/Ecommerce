@@ -41,26 +41,26 @@
 {% block body %}
 {% load static %}
 <div class="container">
-
-  <!-- Loop through all product categories/slides -->
-  {% for product, range, nSlides in allProds %}
-    <h5 class="my-4">Flash Sale On {{ product.0.category }} - Recommended Items</h5>
+  {% for productGroup, category, rangeList in allProds %}
+    <h5 class="my-4">{{ category|title }}</h5>
 
     <div id="demo{{ forloop.counter }}" class="carousel slide my-3" data-ride="carousel">
-
-      <!-- Carousel indicators -->
+      <!-- Indicators -->
       <ul class="carousel-indicators">
         <li data-target="#demo{{ forloop.counter }}" data-slide-to="0" class="active"></li>
-        {% for i in range %}
-          <li data-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
+        {% for i in rangeList %}
+          {% if not forloop.first %}
+            <li data-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ forloop.counter }}"></li>
+          {% endif %}
         {% endfor %}
       </ul>
 
-      <!-- Carousel items -->
+      <!-- Slides -->
       <div class="carousel-inner no-padding">
-        <div class="carousel-item active">
-          <div class="d-flex">
-            {% for i in product %}
+        {% for slide in productGroup %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="d-flex">
+              {% for i in slide %}
               <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="card" style="width: 18rem;">
                   <img src="/media/{{ i.image }}" class="card-img-top" alt="...">
@@ -71,22 +71,19 @@
                   </div>
                 </div>
               </div>
-              {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                </div></div><div class="carousel-item"><div class="d-flex">
-              {% endif %}
-            {% endfor %}
+              {% endfor %}
+            </div>
           </div>
-        </div>
+        {% endfor %}
       </div>
 
-      <!-- Carousel controls -->
+      <!-- Controls -->
       <a class="carousel-control-prev" href="#demo{{ forloop.counter }}" data-slide="prev">
         <span class="carousel-control-prev-icon"></span>
       </a>
       <a class="carousel-control-next" href="#demo{{ forloop.counter }}" data-slide="next">
         <span class="carousel-control-next-icon"></span>
       </a>
-
     </div>
   {% endfor %}
 </div>
